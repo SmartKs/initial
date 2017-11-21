@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:util="http://www.springframework.org/schema/util"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                 http://www.springframework.org/schema/security 
+                 http://www.springframework.org/schema/security/spring-security-3.1.xsd
+                 http://www.springframework.org/schema/util 
+                 http://www.springframework.org/schema/util/spring-util-3.0.xsd
+                 http://www.springframework.org/schema/context 
+                 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+ 
+    <global-method-security pre-post-annotations="enabled">
+    </global-method-security>
+ 
+    <http  use-expressions="true" auto-config="true">
+        <intercept-url pattern="/*"
+                       access="isAuthenticated()" />
+        <intercept-url pattern="/editor/*"
+                               access="hasRole('EDITOR')" />
+        <intercept-url pattern="/editor/admin/*"
+                                       access="hasRole('ADMIN')" />
+        <logout logout-success-url="/login"/>
+        <form-login login-page="/login/"
+                    default-target-url="/"
+                    always-use-default-target="true" />
+         
+        <remember-me key="rememberMeKey"
+                     user-service-ref="userDetailsService"/>        
+    </http>
+    <beans:bean id="userDetailsService"
+                class="com.blogspot.na5cent.jsflearning.services.authentication.UserDetailServices">
+    </beans:bean>
+    <authentication-manager alias="authenManager">
+        <authentication-provider user-service-ref="userDetailsService">
+        </authentication-provider>
+    </authentication-manager>
+    <beans:bean id="messageSource"
+                class="org.springframework.context.support.ResourceBundleMessageSource">
+        <beans:property name="basename"
+                        value="springsecurity"/>
+    </beans:bean>
+</beans:beans> 
